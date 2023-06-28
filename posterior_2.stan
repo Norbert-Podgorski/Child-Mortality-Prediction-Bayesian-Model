@@ -31,8 +31,10 @@ model {
 }
 
 generated quantities {
+  vector [N] log_lik;
   real predicted_child_mortality[N];
   for (i in 1:N) {
+    log_lik[i] = poisson_lpmf(child_mortality[i] | lambda[i]);
     predicted_child_mortality[i] = poisson_rng(lambda[i]);
   }
 }
