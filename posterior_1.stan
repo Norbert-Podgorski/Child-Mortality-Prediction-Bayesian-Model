@@ -4,6 +4,7 @@ data {
   real co2_emission[N]; 
   real food_supply[N];  
   real med_beds[N];  
+  real gender_equality[N];
 }
 
 parameters {
@@ -11,20 +12,23 @@ parameters {
   real co2_emission_coef;
   real food_supply_coef; 
   real med_beds_coef; 
+  real gender_equality_coef;
 }
 
 transformed parameters {
     real lambda[N];
     for (i in 1:N){
-        lambda[i] = exp(alpha + co2_emission_coef * co2_emission[i] + food_supply_coef * food_supply[i] + med_beds_coef * med_beds[i]);  
+        lambda[i] = exp(alpha + co2_emission_coef * co2_emission[i] + food_supply_coef * food_supply[i] + med_beds_coef * med_beds[i] + gender_equality_coef * gender_equality[i]);  
     }
 }
 
 model {
   alpha ~ normal(2, 1);
-  food_supply_coef ~ normal(0.2, 0.1);
-  med_beds_coef ~ normal(0.2, 0.1);
-  co2_emission_coef ~ normal(0.2, 0.1);
+  food_supply_coef ~ normal(0.5, 0.1);
+  med_beds_coef ~ normal(0.5, 0.1);
+  co2_emission_coef ~ normal(0.5, 0.1);
+  gender_equality_coef ~ normal(0.5, 0.1); 
+
   for (i in 1:N){
       child_mortality[i] ~ poisson(lambda[i]);
   }
